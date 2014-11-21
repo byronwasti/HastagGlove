@@ -6,7 +6,7 @@ import wave
 import serial
 from time import sleep
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+ser = serial.Serial('/dev/ttyACM0', 9600) #Create connection with Arduino through serial monitor
 
 
 def record():
@@ -128,6 +128,7 @@ def createTweet2(status_update):
 	return status
 
 
+#Loop for reading from Arduino serial, determining whether hashtag has been enabled
 
 while True:
 	try:
@@ -144,17 +145,15 @@ while True:
 		print("Recording Audio...")
 		record()
 
-		r = sr.Recognizer()
+		r = sr.Recognizer() #Create speech recognition object
 		with sr.WavFile("file.wav") as source:
-			audio = r.listen(source)
+			audio = r.listen(source) #Listen to created '.wav' file, create audio string with recognized audio
 
 		try:
-			tweet = createTweet2(r.recognize(audio))
-			print tweet
-			post(tweet)
+			tweet = createTweet2(r.recognize(audio)) #Create tweet with recognized audio
+			print tweet 
+			post(tweet) #Post tweet
 		except LookupError:
-			#post("#CouldNotUnderstandWhatYouSaid")
-			print "Could Not Understand What You Said"
+			print "Could Not Understand What You Said" #If speechrecognition API fails to recognize speech, return error message
 
-		ser = serial.Serial('/dev/ttyACM0', 9600)
-		#sleep(.05)
+		ser = serial.Serial('/dev/ttyACM0', 9600) #Set up connection with Arduino through serial monitor
